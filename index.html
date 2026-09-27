@@ -1,0 +1,2633 @@
+             <!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GASIMA UPMS — Audio Operations Platform</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --brand-blue-50: #EFF6FF;
+            --brand-blue-100: #DBEAFE;
+            --brand-blue-200: #BFDBFE;
+            --brand-blue-400: #60A5FA;
+            --brand-blue-500: #3B82F6;
+            --brand-blue-600: #2563EB;
+            --brand-blue-700: #1D4ED8;
+            --brand-navy: #0F172A;
+            --brand-navy-light: #1E293B;
+            --brand-gold: #D4A72C;
+            --brand-gold-light: #FEF3C7;
+            --surface: #FFFFFF;
+            --surface-soft: #F8FAFC;
+            --surface-muted: #F1F5F9;
+            --border: #E2E8F0;
+            --border-strong: #CBD5E1;
+            --text: #0F172A;
+            --text-muted: #64748B;
+            --text-light: #94A3B8;
+            --success: #16A34A;
+            --success-soft: #DCFCE7;
+            --warning: #D97706;
+            --warning-soft: #FEF3C7;
+            --danger: #DC2626;
+            --danger-soft: #FEE2E2;
+            --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -4px rgba(15, 23, 42, 0.1);
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body { 
+            overflow-x: hidden; 
+            background-color: var(--surface-soft); 
+            color: var(--text); 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Typography & Utilities */
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .font-sans { font-family: 'Inter', sans-serif; }
+        .hidden { display: none !important; }
+        .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--surface-muted); }
+        ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Component System Classes */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+            height: 3.5rem;
+            width: 100%;
+        }
+
+        .header-inner {
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0 1rem;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-logo {
+            width: 2rem;
+            height: 2rem;
+            background: var(--brand-blue-600);
+            color: white;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .brand-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+            color: var(--brand-navy);
+        }
+
+        .brand-sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.625rem;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.25rem 0.625rem;
+            border-radius: 9999px;
+            background: var(--surface-muted);
+            border: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 9999px;
+        }
+
+        .status-dot.online { background: var(--success); }
+        .status-dot.connecting { background: var(--warning); animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .status-dot.offline { background: var(--danger); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .nav-bar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 3.5rem;
+            z-index: 30;
+        }
+
+        .nav-inner {
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0.375rem 1rem;
+            display: flex;
+            gap: 0.375rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 0.375rem 0.875rem;
+            border-radius: var(--radius-md);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text);
+            background: var(--surface-muted);
+        }
+
+        .tab-btn.active {
+            color: white;
+            background: var(--brand-blue-600);
+        }
+
+        .badge-count {
+            padding: 0.0625rem 0.375rem;
+            border-radius: 9999px;
+            font-size: 0.5625rem;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn.active .badge-count {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .app-workspace {
+            flex-grow: 1;
+            max-width: 80rem;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .safe-bottom {
+            padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+        }
+
+        @media (min-width: 768px) {
+            .safe-bottom { padding-bottom: 2rem; }
+        }
+
+        .op-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .op-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .op-card-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--brand-navy);
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .ticket-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        @media (min-width: 768px) {
+            .ticket-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (min-width: 1280px) {
+            .ticket-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .ticket-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--brand-blue-600);
+            border-radius: var(--radius-lg);
+            padding: 0.875rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 0.625rem;
+            position: relative;
+        }
+
+        .ticket-card.published { border-left-color: var(--brand-gold); }
+        .ticket-card.publishing { border-left-color: var(--brand-blue-400); }
+        .ticket-card.error { border-left-color: var(--danger); }
+        .ticket-card.ready { border-left-color: var(--success); }
+
+        .ticket-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .ticket-title {
+            font-weight: 700;
+            font-size: 0.8125rem;
+            color: var(--brand-navy);
+            line-height: 1.3;
+        }
+
+        .ticket-meta {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.375rem;
+            background: var(--surface-soft);
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.625rem;
+        }
+
+        .ticket-meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ticket-meta-label {
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.5625rem;
+        }
+
+        .ticket-meta-val {
+            font-weight: 600;
+            color: var(--text);
+            word-break: break-all;
+        }
+
+        .ticket-progress-bar {
+            width: 100%;
+            height: 0.375rem;
+            background: var(--surface-muted);
+            border-radius: 9999px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .ticket-progress-fill {
+            height: 100%;
+            background: var(--brand-blue-600);
+            transition: width 0.3s ease;
+        }
+
+        .ticket-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.375rem;
+            padding-top: 0.375rem;
+            border-top: 1px dashed var(--border);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--radius-md);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--brand-blue-600);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--brand-blue-700);
+        }
+
+        .btn-secondary {
+            background: var(--surface-muted);
+            color: var(--text);
+            border-color: var(--border-strong);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: var(--danger-soft);
+            color: var(--danger);
+            border-color: rgba(220, 38, 38, 0.2);
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-gold {
+            background: var(--brand-gold-light);
+            color: #92400E;
+            border-color: rgba(212, 167, 44, 0.4);
+        }
+
+        .btn-gold:hover:not(:disabled) {
+            background: var(--brand-gold);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.625rem;
+        }
+
+        .form-control {
+            width: 100%;
+            background: var(--surface-soft);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-md);
+            padding: 0.5rem 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.15s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--brand-blue-600);
+            background: var(--surface);
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(2px);
+            display: flex;
+            justify-content: flex-end;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .drawer-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .detail-drawer {
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            background: var(--surface);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-lg);
+            transform: translateX(100%);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .drawer-overlay.active .detail-drawer {
+            transform: translateX(0);
+        }
+
+        .drawer-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface-soft);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .drawer-body {
+            padding: 1rem;
+            overflow-y: auto;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .drawer-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .drawer-section-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.625rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .drawer-footer {
+            padding: 0.875rem 1rem;
+            border-top: 1px solid var(--border);
+            background: var(--surface-soft);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding-left: 0.5rem;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.8125rem;
+            top: 0.25rem;
+            bottom: 0.25rem;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .timeline-dot {
+            width: 0.625rem;
+            height: 0.625rem;
+            border-radius: 9999px;
+            background: var(--border-strong);
+            border: 2px solid var(--surface);
+            margin-top: 0.1875rem;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+
+        .timeline-item.active .timeline-dot {
+            background: var(--brand-blue-600);
+        }
+
+        .timeline-content {
+            display: flex;
+            flex-direction: column;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+        }
+
+        .timeline-time {
+            font-size: 0.5625rem;
+            color: var(--text-muted);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 40;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 0.375rem;
+            padding-bottom: calc(0.375rem + env(safe-area-inset-bottom, 0px));
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .bottom-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.25rem;
+        }
+
+        .bottom-nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.375rem 0.25rem;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5625rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .bottom-nav-btn.active {
+            color: var(--brand-blue-600);
+            background: var(--brand-blue-50);
+        }
+
+        .bottom-sheet {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(2px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .bottom-sheet.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .bottom-sheet-content {
+            background: var(--surface);
+            border-top-left-radius: var(--radius-xl);
+            border-top-right-radius: var(--radius-xl);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            transform: translateY(100%);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .bottom-sheet.active .bottom-sheet-content {
+            transform: translateY(0);
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 4.5rem;
+            right: 1rem;
+            z-index: 60;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 22rem;
+            width: calc(100% - 2rem);
+            pointer-events: none;
+        }
+
+        @media (min-width: 768px) {
+            .toast-container { bottom: 1.5rem; }
+        }
+
+        .toast {
+            pointer-events: auto;
+            padding: 0.625rem 0.875rem;
+            border-radius: var(--radius-md);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            color: white;
+            background: var(--brand-navy);
+            border: 1px solid var(--brand-navy-light);
+            transition: opacity 0.2s ease;
+        }
+
+        .toast.success { background: var(--success); border-color: var(--success); }
+        .toast.error { background: var(--danger); border-color: var(--danger); }
+        .toast.warning { background: var(--warning); border-color: var(--warning); }
+
+        .icon {
+            width: 1rem;
+            height: 1rem;
+            stroke-width: 2;
+            stroke: currentColor;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+
+        .icon-lg { width: 1.25rem; height: 1.25rem; }
+        .icon-sm { width: 0.875rem; height: 0.875rem; }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 1.25rem;
+            max-width: 24rem;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .metric-circle-bg { fill: none; stroke: var(--surface-muted); stroke-width: 3.8; }
+        .metric-circle-fill { fill: none; stroke-width: 3.8; stroke-linecap: round; transition: stroke-dasharray 0.5s ease; }
+
+        .splash-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: var(--brand-navy);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            color: white;
+            transition: opacity 0.35s ease, visibility 0.35s ease;
+        }
+
+        .splash-screen.hidden-splash {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .dropzone {
+            border: 2px dashed var(--border-strong);
+            background: var(--surface-soft);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dropzone.active {
+            border-color: var(--brand-blue-600);
+            background: var(--brand-blue-50);
+        }
+
+        @media (min-width: 768px) {
+            .hidden-mobile { display: block !important; }
+            .hidden-desktop { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- INITIAL SPLASH SCREEN -->
+    <div id="splashScreen" class="splash-screen">
+        <div style="text-align: center; max-width: 20rem; width: 100%; display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+            <div class="brand-logo" style="width: 3.5rem; height: 3.5rem; font-size: 1.75rem; border-radius: 1rem; box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);">G</div>
+            <div>
+                <h1 style="font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 800; letter-spacing: 0.05em;">GASIMA UPMS</h1>
+                <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.6875rem; color: var(--text-light); margin-top: 0.125rem;">by ikiygasima</p>
+            </div>
+            <div style="width: 100%; background: var(--brand-navy-light); height: 0.375rem; border-radius: 9999px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                <div id="splashBar" style="background: var(--brand-blue-500); height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+            </div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.625rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em;">Initializing Persistent Console...</span>
+        </div>
+    </div>
+
+    <!-- MAIN APP HEADER -->
+    <header class="app-header">
+        <div class="header-inner">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div class="brand-logo">G</div>
+                <div>
+                    <div style="display: flex; align-items: center; gap: 0.375rem;">
+                        <span class="brand-title">GASIMA UPMS</span>
+                        <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.5625rem; font-weight: 700; padding: 0.0625rem 0.375rem; background: var(--brand-gold-light); color: #92400E; border: 1px solid rgba(212,167,44,0.4); border-radius: 0.25rem;">PRO V6.0</span>
+                    </div>
+                    <p class="brand-sub">by ikiygasima</p>
+                </div>
+            </div>
+
+            <!-- Connection Status -->
+            <div class="status-badge">
+                <span id="connStatusDot" class="status-dot connecting"></span>
+                <span id="connStatusText" style="color: var(--text);">CONNECTING</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- DESKTOP TOP NAVIGATION -->
+    <nav class="nav-bar hidden-mobile">
+        <div class="nav-inner">
+            <button data-tab="tab-home" class="tab-btn active">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                <span>HOME</span>
+            </button>
+            <button data-tab="tab-process" class="tab-btn">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span>PROSES AUDIO</span>
+                <span id="tabActiveBadge" class="badge-count">0</span>
+            </button>
+            <button data-tab="tab-all-jobs" class="tab-btn">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                <span>SEMUA JOB</span>
+            </button>
+            <button data-tab="tab-results" class="tab-btn">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                <span>HASIL AUDIO</span>
+                <span id="tabResultBadge" class="badge-count">0</span>
+            </button>
+            <button data-tab="tab-publish" class="tab-btn">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <span>PUBLISH QUEUE</span>
+                <span id="tabPublishBadge" class="badge-count">0</span>
+            </button>
+            <button data-tab="tab-published" class="tab-btn">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+                <span>PUBLISHED ROBLOX</span>
+                <span id="tabPublishedBadge" class="badge-count">0</span>
+            </button>
+            <button data-tab="tab-roblox" class="tab-btn">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a16.5 16.5 0 0 0 .33-1.82l-2.09-.76a7.28 7.28 0 0 0-.41-1l1.45-1.74a16.29 16.29 0 0 0-1.3-1.3l-1.74 1.45a7.28 7.28 0 0 0-1-.41l-.76-2.09A16.5 16.5 0 0 0 12 4.6a16.5 16.5 0 0 0-1.82.33l-.76 2.09a7.28 7.28 0 0 0-1 .41L6.68 6.08a16.29 16.29 0 0 0-1.3 1.3l1.45 1.74a7.28 7.28 0 0 0-.41 1l-2.09.76A16.5 16.5 0 0 0 4.6 12a16.5 16.5 0 0 0 .33 1.82l2.09.76a7.28 7.28 0 0 0 .41 1l-1.45 1.74a16.29 16.29 0 0 0 1.3 1.3l1.74-1.45a7.28 7.28 0 0 0 1 .41l.76 2.09a16.5 16.5 0 0 0 1.82.33 16.5 16.5 0 0 0 1.82-.33l.76-2.09a7.28 7.28 0 0 0 1-.41l1.74 1.45a16.29 16.29 0 0 0 1.3-1.3l-1.45-1.74a7.28 7.28 0 0 0 .41-1z"></path></svg>
+                <span>SETTINGS</span>
+            </button>
+            <button data-tab="tab-guide" class="tab-btn">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                <span>PANDUAN</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN APP WORKSPACE -->
+    <main class="app-workspace safe-bottom">
+
+        <!-- TAB 0: HOME / DASHBOARD -->
+        <section id="tab-home" class="tab-content" style="display: flex; flex-direction: column; gap: 1rem;">
+            
+            <!-- HARDWARE METRICS CARDS -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem;">
+                <div class="op-card" style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="position: relative; width: 3rem; height: 3rem; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+                        <svg style="width: 100%; height: 100%; transform: rotate(-90deg);" viewBox="0 0 36 36">
+                            <path class="metric-circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="ringCpu" class="metric-circle-fill" style="stroke: var(--brand-blue-600);" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <span id="textCpuVal" class="font-mono" style="position: absolute; font-size: 0.625rem; font-weight: 700;">N/A</span>
+                    </div>
+                    <div style="overflow: hidden;">
+                        <span class="font-mono" style="font-size: 0.5625rem; color: var(--text-muted); text-transform: uppercase;">CPU LOAD</span>
+                        <div class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--brand-navy);">SYSTEM PROC</div>
+                        <span class="font-mono" style="font-size: 0.5625rem; color: var(--brand-blue-600); font-weight: 600;">REALTIME HARDWARE</span>
+                    </div>
+                </div>
+
+                <div class="op-card" style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="position: relative; width: 3rem; height: 3rem; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+                        <svg style="width: 100%; height: 100%; transform: rotate(-90deg);" viewBox="0 0 36 36">
+                            <path class="metric-circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="ringMem" class="metric-circle-fill" style="stroke: var(--brand-blue-400);" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <span id="textMemVal" class="font-mono" style="position: absolute; font-size: 0.625rem; font-weight: 700;">N/A</span>
+                    </div>
+                    <div style="overflow: hidden;">
+                        <span class="font-mono" style="font-size: 0.5625rem; color: var(--text-muted); text-transform: uppercase;">RAM ALLOCATION</span>
+                        <div id="textMemFormatted" class="font-mono truncate" style="font-size: 0.75rem; font-weight: 700; color: var(--brand-navy);">Waiting data...</div>
+                        <span class="font-mono" style="font-size: 0.5625rem; color: var(--brand-blue-600); font-weight: 600;">MEMORY MONITOR</span>
+                    </div>
+                </div>
+
+                <div class="op-card" style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 2.5rem; height: 2.5rem; border-radius: var(--radius-md); background: var(--brand-blue-50); border: 1px solid var(--brand-blue-100); display: flex; align-items: center; justify-content: center; color: var(--brand-blue-600); flex-shrink: 0;">
+                        <svg class="icon icon-lg" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                    </div>
+                    <div style="overflow: hidden;">
+                        <span class="font-mono" style="font-size: 0.5625rem; color: var(--text-muted); text-transform: uppercase;">NETWORK TRAFFIC</span>
+                        <div class="font-mono truncate" style="font-size: 0.6875rem; font-weight: 700; color: var(--brand-navy);">IN: <span id="textNetIn">N/A</span></div>
+                        <div class="font-mono truncate" style="font-size: 0.6875rem; color: var(--text-muted);">OUT: <span id="textNetOut">N/A</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SYSTEM STATS METRICS -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.5rem;">
+                <div class="op-card" style="padding: 0.625rem; border-top: 3px solid var(--border-strong);">
+                    <span class="font-mono" style="font-size: 0.5625rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">TOTAL JOB</span>
+                    <div id="dashTotal" class="font-mono" style="font-size: 1.125rem; font-weight: 800; color: var(--brand-navy); margin-top: 0.125rem;">0</div>
+                </div>
+                <div class="op-card" style="padding: 0.625rem; border-top: 3px solid var(--warning);">
+                    <span class="font-mono" style="font-size: 0.5625rem; font-weight: 700; color: var(--warning); text-transform: uppercase;">QUEUED</span>
+                    <div id="dashQueued" class="font-mono" style="font-size: 1.125rem; font-weight: 800; color: var(--warning); margin-top: 0.125rem;">0</div>
+                </div>
+                <div class="op-card" style="padding: 0.625rem; border-top: 3px solid var(--brand-blue-600);">
+                    <span class="font-mono" style="font-size: 0.5625rem; font-weight: 700; color: var(--brand-blue-600); text-transform: uppercase;">PROCESSING</span>
+                    <div id="dashProcessing" class="font-mono" style="font-size: 1.125rem; font-weight: 800; color: var(--brand-blue-600); margin-top: 0.125rem;">0</div>
+                </div>
+                <div class="op-card" style="padding: 0.625rem; border-top: 3px solid var(--success);">
+                    <span class="font-mono" style="font-size: 0.5625rem; font-weight: 700; color: var(--success); text-transform: uppercase;">READY</span>
+                    <div id="dashReady" class="font-mono" style="font-size: 1.125rem; font-weight: 800; color: var(--success); margin-top: 0.125rem;">0</div>
+                </div>
+                <div class="op-card" style="padding: 0.625rem; border-top: 3px solid var(--brand-gold);">
+                    <span class="font-mono" style="font-size: 0.5625rem; font-weight: 700; color: #92400E; text-transform: uppercase;">PUBLISHED</span>
+                    <div id="dashPublished" class="font-mono" style="font-size: 1.125rem; font-weight: 800; color: #92400E; margin-top: 0.125rem;">0</div>
+                </div>
+                <div class="op-card" style="padding: 0.625rem; border-top: 3px solid var(--danger);">
+                    <span class="font-mono" style="font-size: 0.5625rem; font-weight: 700; color: var(--danger); text-transform: uppercase;">FAILED</span>
+                    <div id="dashError" class="font-mono" style="font-size: 1.125rem; font-weight: 800; color: var(--danger); margin-top: 0.125rem;">0</div>
+                </div>
+            </div>
+
+            <!-- UPLOAD WORKSPACE -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                <div class="op-card" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div class="op-card-header">
+                        <div class="op-card-title">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                            <span>BULK YOUTUBE PROCESSING</span>
+                        </div>
+                        <span class="font-mono" style="font-size: 0.5625rem; padding: 0.125rem 0.375rem; background: var(--brand-blue-50); color: var(--brand-blue-700); border: 1px solid var(--brand-blue-200); border-radius: 0.25rem; font-weight: 700;">SERIAL QUEUE ENGINE</span>
+                    </div>
+                    <textarea id="ytUrlsInput" rows="3" class="form-control" style="resize: none;" placeholder="Paste YouTube URLs, satu per baris..."></textarea>
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+                        <select id="ytSpeedMode" class="form-control" style="width: auto;">
+                            <option value="1.0">1.0x NORMAL SPEED</option>
+                            <option value="1.25">1.25x SPEED</option>
+                            <option value="1.5">1.5x SPEED</option>
+                            <option value="1.7">1.7x ACCELERATED</option>
+                        </select>
+                        <button id="btnSubmitYt" class="btn btn-primary">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            <span>QUEUE ALL</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="dropzone" class="dropzone" style="display: flex; flex-direction: column; justify-content: space-between; gap: 0.75rem;">
+                    <input type="file" id="fileInput" multiple accept="audio/*,.mp3,.wav,.m4a" class="hidden">
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.375rem; margin: auto;">
+                        <div style="width: 2.5rem; height: 2.5rem; border-radius: var(--radius-md); background: var(--success-soft); color: var(--success); display: flex; align-items: center; justify-content: center;">
+                            <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        </div>
+                        <h3 class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--brand-navy); text-transform: uppercase;">UPLOAD AUDIO LOKAL</h3>
+                        <p class="font-mono" style="font-size: 0.625rem; color: var(--text-muted);">Drop audio files (MP3, WAV, M4A) or click to browse device</p>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; pt-2; border-top: 1px solid var(--border);">
+                        <select id="fileSpeedMode" class="form-control" style="width: auto;">
+                            <option value="1.0">1.0x NORMAL SPEED</option>
+                            <option value="1.25">1.25x SPEED</option>
+                            <option value="1.5">1.5x SPEED</option>
+                            <option value="1.7">1.7x ACCELERATED</option>
+                        </select>
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+                            <span>SELECT FILES</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REALTIME EVENT STREAM LOG -->
+            <div class="op-card">
+                <div class="op-card-header">
+                    <div class="op-card-title">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                        <span>REAL-TIME EVENT STREAM</span>
+                    </div>
+                    <span class="font-mono" style="font-size: 0.5625rem; padding: 0.125rem 0.375rem; background: var(--surface-muted); color: var(--text-muted); border-radius: 0.25rem; font-weight: 700;">SSE PROTOCOL</span>
+                </div>
+                <div id="recentActivityList" class="font-mono" style="max-height: 8rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.625rem;">
+                    <p style="color: var(--text-light);">Listening to server events...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 1: PROSES AUDIO -->
+        <section id="tab-process" class="tab-content hidden" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="op-card" style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem;">
+                <h2 class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--brand-navy); text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="status-dot online"></span>
+                    <span>SERIAL PROCESSING QUEUE (QUEUED / PROCESSING)</span>
+                </h2>
+                <div class="font-mono" style="font-size: 0.6875rem; color: var(--text-muted);">
+                    WORKERS: <span id="metricWorkers" style="color: var(--brand-navy); font-weight: 700;">0 / 1</span> | QUEUED: <span id="metricQueue" style="color: var(--warning); font-weight: 700;">0</span> | SSE: <span id="metricSseStatus" style="color: var(--success); font-weight: 700;">LIVE</span>
+                </div>
+            </div>
+
+            <div id="processTicketsContainer" class="ticket-grid">
+                <div class="op-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light); font-family: 'JetBrains Mono', monospace;">Tidak ada proses aktif saat ini.</div>
+            </div>
+        </section>
+
+        <!-- TAB 2: SEMUA JOB -->
+        <section id="tab-all-jobs" class="tab-content hidden" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="op-card" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.75rem 1rem;">
+                <h2 class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--brand-navy); text-transform: uppercase;">MASTER JOB QUEUE</h2>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="text" id="allJobsSearch" placeholder="Cari ID / Title..." class="form-control" style="width: 12rem;">
+                    <select id="allJobsFilter" class="form-control" style="width: 9rem;">
+                        <option value="ALL">ALL STATUS</option>
+                        <option value="QUEUED">QUEUED</option>
+                        <option value="PROCESSING">PROCESSING</option>
+                        <option value="READY">READY</option>
+                        <option value="PUBLISHING">PUBLISHING</option>
+                        <option value="PUBLISHED">PUBLISHED</option>
+                        <option value="ERROR">ERROR</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="allJobsTicketsContainer" class="ticket-grid">
+                <div class="op-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light); font-family: 'JetBrains Mono', monospace;">Memuat data job...</div>
+            </div>
+        </section>
+
+        <!-- TAB 3: HASIL AUDIO (READY) -->
+        <section id="tab-results" class="tab-content hidden" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="op-card" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.75rem 1rem;">
+                <h2 class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--brand-navy); text-transform: uppercase;">HASIL AUDIO SIAP DOWNLOAD (READY)</h2>
+                <input type="text" id="resultsSearch" placeholder="Cari title / Job ID..." class="form-control" style="width: 16rem;">
+            </div>
+
+            <div id="resultsTicketsContainer" class="ticket-grid">
+                <div class="op-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light); font-family: 'JetBrains Mono', monospace;">Belum ada audio dengan status READY.</div>
+            </div>
+        </section>
+
+        <!-- TAB BARU: PUBLISH QUEUE -->
+        <section id="tab-publish" class="tab-content hidden" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="op-card" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.75rem 1rem; border-left: 4px solid var(--success);">
+                <div>
+                    <h2 class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--brand-navy); text-transform: uppercase;">ROBLOX PUBLISH QUEUE</h2>
+                    <p class="font-mono" style="font-size: 0.625rem; color: var(--text-muted);">Daftar audio berstatus READY yang dapat dipublikasikan secara langsung ke Roblox</p>
+                </div>
+                <input type="text" id="publishSearch" placeholder="Cari title / Job ID..." class="form-control" style="width: 16rem;">
+            </div>
+
+            <div id="publishTicketsContainer" class="ticket-grid">
+                <div class="op-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light); font-family: 'JetBrains Mono', monospace;">Tidak ada audio yang siap dipublish di antrean saat ini.</div>
+            </div>
+        </section>
+
+        <!-- TAB 4: PUBLISHED ROBLOX HISTORY -->
+        <section id="tab-published" class="tab-content hidden" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="op-card" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.75rem 1rem; border-left: 4px solid var(--brand-gold);">
+                <div>
+                    <h2 class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--brand-navy); text-transform: uppercase;">AUDIO SUDAH TERPUBLIKASI ROBLOX</h2>
+                    <p class="font-mono" style="font-size: 0.625rem; color: var(--text-muted);">Tersimpan secara independen di Local Storage Browser Anda</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="text" id="publishedSearch" placeholder="Cari title / Job ID / Roblox ID..." class="form-control" style="width: 16rem;">
+                    <button onclick="UI.showClearHistoryModal()" class="btn btn-danger btn-sm">CLEAR HISTORY</button>
+                </div>
+            </div>
+
+            <div id="publishedTicketsContainer" class="ticket-grid">
+                <div class="op-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light); font-family: 'JetBrains Mono', monospace;">Belum ada history audio yang terpublikasi ke Roblox.</div>
+            </div>
+        </section>
+
+        <!-- TAB 5: ROBLOX CONFIGURATION -->
+        <section id="tab-roblox" class="tab-content hidden" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="op-card" style="max-width: 40rem; border-top: 4px solid var(--brand-blue-600); display: flex; flex-direction: column; gap: 1rem;">
+                <div class="op-card-header">
+                    <div>
+                        <h3 class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--brand-navy); text-transform: uppercase;">ROBLOX OPEN CLOUD CONFIGURATION</h3>
+                        <p class="font-mono" style="font-size: 0.625rem; color: var(--text-muted); margin-top: 0.125rem;">Integrasi API Open Cloud untuk publikasi audio otomatis ke platform Roblox.</p>
+                    </div>
+                    <span id="configBadge" class="font-mono" style="font-size: 0.5625rem; padding: 0.125rem 0.375rem; background: var(--surface-muted); color: var(--text-muted); border-radius: 0.25rem; font-weight: 700;">CHECKING</span>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;" class="font-mono">
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label style="font-size: 0.625rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Open Cloud API Key</label>
+                        <div style="position: relative;">
+                            <input type="password" id="robloxApiKey" placeholder="Isi API Key baru (Kosongkan jika tidak ingin merubah)..." class="form-control" style="padding-right: 3.5rem;">
+                            <button type="button" id="toggleApiKey" style="position: absolute; right: 0.5rem; top: 0.5rem; background: transparent; border: none; font-family: 'JetBrains Mono', monospace; font-size: 0.5625rem; font-weight: 700; color: var(--text-muted); cursor: pointer; text-transform: uppercase;">Show</button>
+                        </div>
+                        <span id="apiKeyStatusText" style="font-size: 0.5625rem; color: var(--warning);">Status: Memeriksa konfigurasi server...</span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
+                        <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <label style="font-size: 0.625rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Creator Type</label>
+                            <select id="robloxCreatorType" class="form-control">
+                                <option value="USER">USER (Personal Account)</option>
+                                <option value="GROUP">GROUP (Roblox Group)</option>
+                            </select>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                            <label style="font-size: 0.625rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Target ID (User ID / Group ID)</label>
+                            <input type="text" id="robloxCreatorId" placeholder="e.g. 12345678" class="form-control">
+                        </div>
+                    </div>
+
+                    <div style="padding-top: 0.25rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="robloxAutoUpload" style="accent-color: var(--brand-blue-600);">
+                            <span class="font-sans" style="font-size: 0.6875rem; font-weight: 500; color: var(--text);">AUTO PUBLISH: Otomatis upload ke Roblox saat job berstatus READY</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div style="padding-top: 0.75rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
+                    <button id="btnSaveRoblox" class="btn btn-primary">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                        <span>SIMPAN KONFIGURASI</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: PANDUAN OPERASIONAL -->
+        <section id="tab-guide" class="tab-content hidden" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="op-card" style="max-width: 40rem; display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                    <h3 class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--brand-navy); text-transform: uppercase;">PANDUAN OPERASIONAL & ARSITEKTUR PERSISTEN</h3>
+                    <p class="font-mono" style="font-size: 0.625rem; color: var(--text-muted); margin-top: 0.125rem;">Dokumentasi kontrol sistem GASIMA UPMS by ikiygasima</p>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;" class="font-sans">
+                    <div style="padding: 0.75rem; background: var(--surface-soft); border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.25rem;">
+                        <div class="font-mono" style="font-size: 0.625rem; font-weight: 700; color: var(--brand-navy); text-transform: uppercase;">1. PERSISTENT LOCAL RECOVERY LAYER</div>
+                        <p style="font-size: 0.6875rem; color: var(--text-muted);">Seluruh job yang Anda upload/submit langsung dicatat di browser LocalStorage. Jika browser direfresh, server dibersihkan, atau SSE terputus, data tetap utuh dan dapat dipulihkan.</p>
+                    </div>
+
+                    <div style="padding: 0.75rem; background: var(--surface-soft); border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.25rem;">
+                        <div class="font-mono" style="font-size: 0.625rem; font-weight: 700; color: var(--brand-navy); text-transform: uppercase;">2. DEDICATED PUBLISH QUEUE TAB</div>
+                        <p style="font-size: 0.6875rem; color: var(--text-muted);">Audio berstatus READY otomatis masuk ke tab PUBLISH QUEUE. Klik [PUBLISH ROBLOX] untuk mengirimnya ke platform Roblox. Setelah terkonfirmasi, audio berpindah ke PUBLISHED HISTORY.</p>
+                    </div>
+
+                    <div style="padding: 0.75rem; background: var(--surface-soft); border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.25rem;">
+                        <div class="font-mono" style="font-size: 0.625rem; font-weight: 700; color: var(--brand-navy); text-transform: uppercase;">3. ISOLATED DELETE & CLEANUP</div>
+                        <p style="font-size: 0.6875rem; color: var(--text-muted);">Penghapusan history lokal pada tab Published tidak akan menghapus asset di Roblox maupun job aktif di server. Seluruh token API Key juga tersimpan aman di server dan tidak masuk LocalStorage.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MOBILE NAVIGATION BOTTOM BAR -->
+    <nav class="bottom-nav hidden-desktop">
+        <div class="bottom-nav-grid">
+            <button data-tab="tab-home" class="bottom-nav-btn active">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                <span>HOME</span>
+            </button>
+            <button data-tab="tab-process" class="bottom-nav-btn">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span>PROSES</span>
+            </button>
+            <button data-tab="tab-publish" class="bottom-nav-btn">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <span>PUBLISH</span>
+            </button>
+            <button data-tab="tab-published" class="bottom-nav-btn">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+                <span>PUBLISHED</span>
+            </button>
+            <button id="btnMobileMore" class="bottom-nav-btn">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <span>MORE</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MOBILE MORE MENU BOTTOM SHEET -->
+    <div id="mobileMoreDrawer" class="bottom-sheet">
+        <div class="bottom-sheet-content font-mono">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">
+                <span style="font-weight: 700; font-size: 0.75rem; color: var(--brand-navy);">GASIMA UPMS — NAVIGATION SHEET</span>
+                <button onclick="UI.hideMobileDrawer()" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer;">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <button onclick="UI.switchTab('tab-results'); UI.hideMobileDrawer();" class="btn btn-secondary" style="justify-content: space-between; padding: 0.75rem;">
+                    <span style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path></svg>
+                        <span>HASIL AUDIO (READY)</span>
+                    </span>
+                    <span>→</span>
+                </button>
+                <button onclick="UI.switchTab('tab-all-jobs'); UI.hideMobileDrawer();" class="btn btn-secondary" style="justify-content: space-between; padding: 0.75rem;">
+                    <span style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg>
+                        <span>MASTER JOB QUEUE</span>
+                    </span>
+                    <span>→</span>
+                </button>
+                <button onclick="UI.switchTab('tab-roblox'); UI.hideMobileDrawer();" class="btn btn-secondary" style="justify-content: space-between; padding: 0.75rem;">
+                    <span style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle></svg>
+                        <span>ROBLOX OPEN CLOUD SETTINGS</span>
+                    </span>
+                    <span>→</span>
+                </button>
+                <button onclick="UI.switchTab('tab-guide'); UI.hideMobileDrawer();" class="btn btn-secondary" style="justify-content: space-between; padding: 0.75rem;">
+                    <span style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path></svg>
+                        <span>PANDUAN OPERASIONAL</span>
+                    </span>
+                    <span>→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JOB DETAIL INSPECTOR DRAWER -->
+    <div id="jobDetailModal" class="drawer-overlay">
+        <div class="detail-drawer font-mono">
+            <div class="drawer-header">
+                <div>
+                    <span style="font-size: 0.5625rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">GASIMA UPMS</span>
+                    <h3 style="font-size: 0.8125rem; font-weight: 800; color: var(--brand-navy);">JOB DETAILS & INSPECTOR</h3>
+                </div>
+                <button onclick="UI.hideDetailModal()" class="btn btn-secondary btn-sm" style="padding: 0.25rem;">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+
+            <div id="jobDetailContent" class="drawer-body">
+                <!-- Content Rendered Dynamically -->
+            </div>
+
+            <div id="jobDetailFooter" class="drawer-footer">
+                <button onclick="UI.hideDetailModal()" class="btn btn-secondary">Tutup Inspector</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELETE CONFIRMATION MODAL -->
+    <div id="deleteModal" class="modal-overlay">
+        <div class="modal-card font-mono">
+            <div style="width: 2.5rem; height: 2.5rem; border-radius: 9999px; background: var(--danger-soft); color: var(--danger); display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <h3 id="deleteModalTitle" style="font-size: 0.8125rem; font-weight: 800; color: var(--brand-navy); text-transform: uppercase;">Remove Record?</h3>
+            <p id="deleteModalDesc" class="font-sans" style="font-size: 0.6875rem; color: var(--text-muted);">Tindakan ini menghapus record lokal dari browser. Aset Roblox dan data server tidak akan terpengaruh.</p>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding-top: 0.5rem;">
+                <button id="btnCancelDelete" class="btn btn-secondary">CANCEL</button>
+                <button id="btnConfirmDelete" class="btn btn-danger">REMOVE RECORD</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLEAR LOCAL HISTORY CONFIRMATION MODAL -->
+    <div id="clearHistoryModal" class="modal-overlay">
+        <div class="modal-card font-mono">
+            <div style="width: 2.5rem; height: 2.5rem; border-radius: 9999px; background: var(--warning-soft); color: var(--warning); display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <h3 style="font-size: 0.8125rem; font-weight: 800; color: var(--brand-navy); text-transform: uppercase;">CLEAR ALL PUBLISHED HISTORY?</h3>
+            <p class="font-sans" style="font-size: 0.6875rem; color: var(--text-muted);">Tindakan ini menghapus seluruh catatan publikasi yang tersimpan di browser ini. Ini TIDAK akan menghapus aset Roblox maupun job aktif di server.</p>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding-top: 0.5rem;">
+                <button onclick="UI.hideClearHistoryModal()" class="btn btn-secondary">CANCEL</button>
+                <button onclick="PublishedHistoryStore.clear(); UI.hideClearHistoryModal();" class="btn btn-danger">CLEAR HISTORY LOKAL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- FRONTEND ENGINE SCRIPT -->
+    <script>
+        // Centralized Configuration & Safe URL Resolver
+        const CONFIG = {
+            BACKEND_URL: (location.protocol === 'http:' || location.protocol === 'https:') && location.hostname === 'node.monapi.web.id'
+                ? window.location.origin
+                : 'http://node.monapi.web.id:2048',
+            STORAGE_KEYS: {
+                JOBS: 'GASIMA_UPMS_JOBS_V1',
+                PUBLISH_QUEUE: 'GASIMA_UPMS_PUBLISH_QUEUE_V1',
+                PUBLISHED_HISTORY: 'GASIMA_UPMS_PUBLISHED_HISTORY_V6',
+                LEGACY_V5: 'GASIMA_UPMS_PUBLISHED_HISTORY_V5',
+                LEGACY_V4: 'GASIMA_UPMS_PUBLISHED_HISTORY_V4',
+                UI_STATE: 'GASIMA_UPMS_UI_STATE_V1'
+            },
+            MAX_LOCAL_ITEMS: 1000,
+            REST_TIMEOUT_MS: 15000
+        };
+
+        function apiUrl(path) {
+            const cleanPath = path.startsWith('/') ? path : '/' + path;
+            return `${CONFIG.BACKEND_URL}${cleanPath}`;
+        }
+
+        const DOM = {};
+
+        // Helper Utility Functions
+        function escapeHTML(str) {
+            if (str === null || str === undefined) return '';
+            return String(str).replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+            });
+        }
+
+        function safeExternalURL(url) {
+            if (!url) return '#';
+            const trimmed = String(url).trim();
+            if (/^(https?:\/\/)/i.test(trimmed)) {
+                return escapeHTML(trimmed);
+            }
+            return '#';
+        }
+
+        function formatDateTime(isoString) {
+            if (!isoString) return '—';
+            try {
+                const d = new Date(isoString);
+                if (isNaN(d.getTime())) return '—';
+                return d.toLocaleString('id-ID', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                }).replace(/\./g, ':');
+            } catch (e) {
+                return '—';
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (!bytes || isNaN(bytes)) return '—';
+            const num = Number(bytes);
+            if (num < 1024) return num + ' B';
+            if (num < 1024 * 1024) return (num / 1024).toFixed(1) + ' KB';
+            return (num / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        function normalizeJob(raw) {
+            if (!raw) return null;
+            const id = String(raw.id || raw.jobId || 'N/A').trim();
+            if (id === 'N/A' || !id) return null;
+
+            const sourceLinks = [];
+            const primaryUrl = raw.url || raw.sourceUrl || raw.sourceURL || raw.source || raw.originalUrl || raw.inputUrl || raw.youtubeUrl || null;
+
+            if (primaryUrl && /^(https?:\/\/)/i.test(primaryUrl)) {
+                sourceLinks.push(primaryUrl);
+            }
+
+            if (Array.isArray(raw.sourceLinks)) {
+                raw.sourceLinks.forEach(u => {
+                    if (u && /^(https?:\/\/)/i.test(u) && !sourceLinks.includes(u)) {
+                        sourceLinks.push(u);
+                    }
+                });
+            }
+
+            const rawStatus = String(raw.status || raw.robloxPublishStatus || 'QUEUED').toUpperCase();
+            let finalStatus = rawStatus;
+
+            if (raw.robloxAssetId && raw.robloxPublishStatus === 'COMPLETED') {
+                finalStatus = 'PUBLISHED';
+            } else if (rawStatus === 'COMPLETED' || rawStatus === 'FINISHED') {
+                finalStatus = 'READY';
+            } else if (rawStatus === 'FAILED') {
+                finalStatus = 'ERROR';
+            }
+
+            const nowIso = new Date().toISOString();
+
+            return {
+                id: id,
+                title: raw.title || 'Untitled Audio',
+                type: raw.type || (primaryUrl ? 'YouTube' : 'LOCAL_FILE'),
+                status: finalStatus,
+                stage: raw.stage || finalStatus,
+                progress: typeof raw.progress === 'number' ? Math.min(100, Math.max(0, raw.progress)) : (finalStatus === 'READY' || finalStatus === 'PUBLISHED' ? 100 : 0),
+                url: primaryUrl,
+                sourceLinks: sourceLinks,
+                createdAt: raw.createdAt || raw.created_at || nowIso,
+                queuedAt: raw.queuedAt || raw.createdAt || nowIso,
+                startedAt: raw.startedAt || raw.processingStartedAt || null,
+                completedAt: raw.completedAt || raw.finishedAt || null,
+                publishedAt: raw.publishedAt || (finalStatus === 'PUBLISHED' ? nowIso : null),
+                processingDuration: raw.processingDuration || raw.duration || null,
+                fileSize: raw.inputSize || raw.fileSize || raw.outputSize || null,
+                outputFormat: raw.outputFormat || raw.format || 'MP3',
+                speedMode: raw.speedMode || '1.0x',
+                robloxAssetId: raw.robloxAssetId || raw.assetId || null,
+                robloxPublishStatus: raw.robloxPublishStatus || (raw.robloxAssetId ? 'COMPLETED' : (finalStatus === 'PUBLISHING' ? 'PUBLISHING' : 'NOT_PUBLISHED')),
+                errorMessage: raw.errorMessage || raw.error || null,
+                worker: raw.worker || null,
+                queuePosition: raw.queuePosition || null,
+                metadata: raw.metadata || {},
+                updatedAt: raw.updatedAt || nowIso,
+                localSavedAt: raw.localSavedAt || nowIso
+            };
+        }
+
+        const Toast = {
+            show(msg, type = 'info') {
+                if (!DOM.toastContainer) return;
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.innerHTML = `
+                    <span>${escapeHTML(msg)}</span>
+                    <button onclick="this.parentElement.remove()" style="background:transparent;border:none;color:white;cursor:pointer;opacity:0.8;">✕</button>
+                `;
+                DOM.toastContainer.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 200);
+                }, 3500);
+            }
+        };
+
+        const CentralStorageEngine = {
+            safeGet(key) {
+                try {
+                    const raw = localStorage.getItem(key);
+                    if (!raw) return [];
+                    const parsed = JSON.parse(raw);
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    console.error(`[Storage] Corrupt payload found for key: ${key}`, e);
+                    return [];
+                }
+            },
+
+            safeSet(key, dataArray) {
+                try {
+                    const validData = Array.isArray(dataArray) ? dataArray.filter(Boolean) : [];
+                    localStorage.setItem(key, JSON.stringify(validData.slice(0, CONFIG.MAX_LOCAL_ITEMS)));
+                } catch (e) {
+                    console.error(`[Storage] Storage Write Error (${key})`, e);
+                    Toast.show("Local storage penuh. Data terbaru tidak dapat disimpan secara lokal.", "warning");
+                }
+            }
+        };
+
+        const PersistentJobStore = {
+            timer: null,
+            cacheMap: new Map(),
+
+            load() {
+                const list = CentralStorageEngine.safeGet(CONFIG.STORAGE_KEYS.JOBS);
+                this.cacheMap.clear();
+                list.forEach(item => {
+                    const norm = normalizeJob(item);
+                    if (norm) this.cacheMap.set(norm.id, norm);
+                });
+                return Array.from(this.cacheMap.values());
+            },
+
+            getAll() { return Array.from(this.cacheMap.values()); },
+
+            get(id) { return this.cacheMap.get(id) || null; },
+
+            upsert(rawJob, immediate = false) {
+                const norm = normalizeJob(rawJob);
+                if (!norm) return null;
+
+                const existing = this.cacheMap.get(norm.id);
+                if (existing) {
+                    if (existing.status === 'PUBLISHED' && norm.status === 'READY') {
+                        norm.status = 'PUBLISHED';
+                        norm.robloxAssetId = existing.robloxAssetId;
+                    }
+                    this.cacheMap.set(norm.id, { ...existing, ...norm, updatedAt: new Date().toISOString() });
+                } else {
+                    this.cacheMap.set(norm.id, norm);
+                }
+
+                if (immediate) {
+                    this.flush();
+                } else {
+                    this.scheduleSave();
+                }
+                return this.cacheMap.get(norm.id);
+            },
+
+            remove(id) {
+                const deleted = this.cacheMap.delete(id);
+                if (deleted) this.flush();
+                return deleted;
+            },
+
+            scheduleSave() {
+                if (this.timer) clearTimeout(this.timer);
+                this.timer = setTimeout(() => this.flush(), 200);
+            },
+
+            flush() {
+                if (this.timer) clearTimeout(this.timer);
+                CentralStorageEngine.safeSet(CONFIG.STORAGE_KEYS.JOBS, Array.from(this.cacheMap.values()));
+            }
+        };
+
+        const PublishQueueStore = {
+            timer: null,
+            cacheMap: new Map(),
+
+            load() {
+                const list = CentralStorageEngine.safeGet(CONFIG.STORAGE_KEYS.PUBLISH_QUEUE);
+                this.cacheMap.clear();
+                list.forEach(item => {
+                    const norm = normalizeJob(item);
+                    if (norm && (norm.status === 'READY' || norm.status === 'PUBLISHING' || norm.status === 'PUBLISH_FAILED')) {
+                        this.cacheMap.set(norm.id, norm);
+                    }
+                });
+                return Array.from(this.cacheMap.values());
+            },
+
+            getAll() { return Array.from(this.cacheMap.values()); },
+
+            get(id) { return this.cacheMap.get(id) || null; },
+
+            syncFromJob(job) {
+                const norm = normalizeJob(job);
+                if (!norm) return;
+
+                if (norm.status === 'READY' || norm.status === 'PUBLISHING' || norm.status === 'PUBLISH_FAILED') {
+                    this.cacheMap.set(norm.id, norm);
+                } else {
+                    this.cacheMap.delete(norm.id);
+                }
+                this.scheduleSave();
+            },
+
+            remove(id) {
+                const res = this.cacheMap.delete(id);
+                if (res) this.flush();
+                return res;
+            },
+
+            scheduleSave() {
+                if (this.timer) clearTimeout(this.timer);
+                this.timer = setTimeout(() => this.flush(), 200);
+            },
+
+            flush() {
+                if (this.timer) clearTimeout(this.timer);
+                CentralStorageEngine.safeSet(CONFIG.STORAGE_KEYS.PUBLISH_QUEUE, Array.from(this.cacheMap.values()));
+            }
+        };
+
+        const PublishedHistoryStore = {
+            cacheMap: new Map(),
+
+            load() {
+                this.migrateLegacy();
+                const list = CentralStorageEngine.safeGet(CONFIG.STORAGE_KEYS.PUBLISHED_HISTORY);
+                this.cacheMap.clear();
+                list.forEach(item => {
+                    const norm = normalizeJob(item);
+                    if (norm && (norm.status === 'PUBLISHED' || norm.robloxAssetId)) {
+                        this.cacheMap.set(norm.id, norm);
+                    }
+                });
+                return Array.from(this.cacheMap.values());
+            },
+
+            migrateLegacy() {
+                const legacyV5 = CentralStorageEngine.safeGet(CONFIG.STORAGE_KEYS.LEGACY_V5);
+                const legacyV4 = CentralStorageEngine.safeGet(CONFIG.STORAGE_KEYS.LEGACY_V4);
+                const currentV6 = CentralStorageEngine.safeGet(CONFIG.STORAGE_KEYS.PUBLISHED_HISTORY);
+
+                if ((legacyV5.length > 0 || legacyV4.length > 0) && currentV6.length === 0) {
+                    const combined = [...legacyV5, ...legacyV4];
+                    const deduplicatedMap = new Map();
+
+                    combined.forEach(raw => {
+                        const norm = normalizeJob(raw);
+                        if (norm && norm.id) {
+                            deduplicatedMap.set(norm.id, norm);
+                        }
+                    });
+
+                    const mergedList = Array.from(deduplicatedMap.values());
+                    CentralStorageEngine.safeSet(CONFIG.STORAGE_KEYS.PUBLISHED_HISTORY, mergedList);
+                    console.log(`[Migration] Migrated ${mergedList.length} records into ${CONFIG.STORAGE_KEYS.PUBLISHED_HISTORY}`);
+                }
+            },
+
+            getAll() { return Array.from(this.cacheMap.values()); },
+
+            get(id) { return this.cacheMap.get(id) || null; },
+
+            syncFromJob(job) {
+                const norm = normalizeJob(job);
+                if (!norm) return;
+
+                if (norm.status === 'PUBLISHED' || norm.robloxAssetId) {
+                    norm.status = 'PUBLISHED';
+                    norm.robloxPublishStatus = 'COMPLETED';
+                    this.cacheMap.set(norm.id, norm);
+                    this.flush();
+                }
+            },
+
+            remove(id) {
+                const res = this.cacheMap.delete(id);
+                if (res) this.flush();
+                return res;
+            },
+
+            clear() {
+                this.cacheMap.clear();
+                CentralStorageEngine.safeSet(CONFIG.STORAGE_KEYS.PUBLISHED_HISTORY, []);
+                Toast.show("History publikasi lokal dibersihkan.", "info");
+                UI.patchJobViews();
+            },
+
+            flush() {
+                CentralStorageEngine.safeSet(CONFIG.STORAGE_KEYS.PUBLISHED_HISTORY, Array.from(this.cacheMap.values()));
+            }
+        };
+
+        const Store = {
+            state: {
+                jobsMap: new Map(),
+                activeTab: 'tab-home',
+                allJobsSearch: '',
+                allJobsFilter: 'ALL',
+                resultsSearch: '',
+                publishSearch: '',
+                publishedSearch: '',
+                pendingDeleteContext: null,
+                robloxConfig: { configured: false, creatorType: 'USER', creatorId: '', autoUpload: false }
+            },
+
+            hydrateFromStorage() {
+                const persistentJobs = PersistentJobStore.load();
+                PublishQueueStore.load();
+                PublishedHistoryStore.load();
+
+                persistentJobs.forEach(job => {
+                    this.state.jobsMap.set(job.id, job);
+                });
+
+                PublishedHistoryStore.getAll().forEach(pubJob => {
+                    this.state.jobsMap.set(pubJob.id, pubJob);
+                });
+            },
+
+            updateJob(rawJob, source = 'GENERIC') {
+                const norm = normalizeJob(rawJob);
+                if (!norm || !norm.id) return null;
+
+                const existing = this.state.jobsMap.get(norm.id);
+                let merged = norm;
+
+                if (existing) {
+                    if (existing.status === 'PUBLISHED' && norm.status === 'READY') {
+                        norm.status = 'PUBLISHED';
+                        norm.robloxAssetId = existing.robloxAssetId;
+                    }
+                    merged = { ...existing, ...norm, updatedAt: new Date().toISOString() };
+                }
+
+                this.state.jobsMap.set(merged.id, merged);
+
+                PersistentJobStore.upsert(merged, source === 'UPLOAD');
+                PublishQueueStore.syncFromJob(merged);
+                PublishedHistoryStore.syncFromJob(merged);
+
+                return merged;
+            },
+
+            getJob(id) {
+                return this.state.jobsMap.get(id) || PersistentJobStore.get(id) || PublishedHistoryStore.get(id) || null;
+            }
+        };
+
+        const ApiService = {
+            async fetchApi(endpoint, options = {}) {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), CONFIG.REST_TIMEOUT_MS);
+                
+                try {
+                    const res = await fetch(apiUrl(endpoint), {
+                        ...options,
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+                    if (!res.ok) {
+                        const errData = await res.json().catch(() => ({}));
+                        const errorMsg = errData.error || errData.message || `HTTP ${res.status} ${res.statusText}`;
+                        const err = new Error(errorMsg);
+                        err.status = res.status;
+                        throw err;
+                    }
+                    return await res.json();
+                } catch (err) {
+                    clearTimeout(timeoutId);
+                    if (err.name === 'AbortError') {
+                        throw new Error('Request Timeout: Server tidak merespon dalam batas waktu');
+                    }
+                    throw err;
+                }
+            },
+
+            getJobs() { return this.fetchApi('/api/jobs'); },
+            
+            submitBulkYt(urls, speedMode) {
+                return this.fetchApi('/api/jobs/bulk', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ urls, speedMode })
+                });
+            },
+
+            uploadFileJob(file, speedMode) {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('speedMode', speedMode);
+                return this.fetchApi('/api/jobs/upload', { method: 'POST', body: formData });
+            },
+
+            getRobloxConfig() { return this.fetchApi('/api/roblox/config'); },
+
+            saveRobloxConfig(configPayload) {
+                return this.fetchApi('/api/roblox/config', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(configPayload)
+                });
+            },
+
+            triggerRobloxUpload(jobId) {
+                return this.fetchApi(`/api/jobs/${encodeURIComponent(jobId)}/roblox/upload`, { method: 'POST' });
+            },
+
+            deleteJobServer(id) { return this.fetchApi(`/api/jobs/${encodeURIComponent(id)}`, { method: 'DELETE' }); },
+
+            getDownloadUrl(id) { return apiUrl(`/api/jobs/${encodeURIComponent(id)}/download`); }
+        };
+
+        const SseManager = {
+            eventSource: null,
+            reconnectTimer: null,
+            isConnecting: false,
+
+            connect() {
+                if (this.isConnecting) return;
+                if (this.eventSource && (this.eventSource.readyState === EventSource.CONNECTING || this.eventSource.readyState === EventSource.OPEN)) {
+                    return;
+                }
+
+                this.isConnecting = true;
+                this.cleanup();
+                UI.setConnectionStatus('CONNECTING', 'connecting');
+
+                try {
+                    const sseUrl = apiUrl('/api/events');
+                    this.eventSource = new EventSource(sseUrl);
+
+                    this.eventSource.onopen = () => {
+                        this.isConnecting = false;
+                        UI.setConnectionStatus('ONLINE', 'online');
+                        App.syncJobsWithBackend();
+                    };
+
+                    this.eventSource.addEventListener('system.metrics', (e) => {
+                        try {
+                            const metrics = JSON.parse(e.data);
+                            UI.updateSystemMetricsUI(metrics);
+                        } catch (err) {}
+                    });
+
+                    this.eventSource.addEventListener('job.created', (e) => {
+                        try {
+                            const data = JSON.parse(e.data);
+                            if (data) { 
+                                Store.updateJob(data, 'SSE'); 
+                                UI.patchJobViews();
+                                UI.logActivity(`JOB CREATED: ${data.id}`);
+                            }
+                        } catch (err) {}
+                    });
+
+                    this.eventSource.addEventListener('job.progress', (e) => {
+                        try {
+                            const data = JSON.parse(e.data);
+                            if (data) { 
+                                Store.updateJob(data, 'SSE'); 
+                                UI.patchJobViews();
+                            }
+                        } catch (err) {}
+                    });
+
+                    this.eventSource.addEventListener('job.completed', (e) => {
+                        try {
+                            const data = JSON.parse(e.data);
+                            if (data) {
+                                const job = Store.updateJob(data, 'SSE');
+                                UI.patchJobViews();
+                                UI.logActivity(`READY: ${data.id}`);
+                                Toast.show(`Audio "${job.title}" siap dipublikasikan.`, 'success');
+                            }
+                        } catch (err) {}
+                    });
+
+                    this.eventSource.addEventListener('job.failed', (e) => {
+                        try {
+                            const data = JSON.parse(e.data);
+                            if (data) {
+                                Store.updateJob(data, 'SSE');
+                                UI.patchJobViews();
+                                UI.logActivity(`ERROR: ${data.id}`);
+                            }
+                        } catch (err) {}
+                    });
+
+                    this.eventSource.addEventListener('roblox.upload.started', (e) => {
+                        try {
+                            const data = JSON.parse(e.data);
+                            if (data) {
+                                const target = Store.getJob(data.jobId || data.id);
+                                if (target) {
+                                    target.status = 'PUBLISHING';
+                                    target.robloxPublishStatus = 'PUBLISHING';
+                                    Store.updateJob(target, 'SSE');
+                                    UI.patchJobViews();
+                                }
+                            }
+                        } catch (err) {}
+                    });
+
+                    this.eventSource.addEventListener('roblox.upload.completed', (e) => {
+                        try {
+                            const data = JSON.parse(e.data);
+                            if (data) {
+                                const target = Store.getJob(data.jobId || data.id);
+                                if (target) {
+                                    target.status = 'PUBLISHED';
+                                    target.robloxAssetId = data.assetId || data.robloxAssetId;
+                                    target.robloxPublishStatus = 'COMPLETED';
+                                    target.publishedAt = new Date().toISOString();
+                                    Store.updateJob(target, 'SSE');
+                                    UI.patchJobViews();
+                                    UI.logActivity(`ROBLOX PUBLISHED: ${target.robloxAssetId}`);
+                                    Toast.show(`Berhasil dipublikasikan ke Roblox! ID: ${target.robloxAssetId}`, 'success');
+                                }
+                            }
+                        } catch (err) {}
+                    });
+
+                    this.eventSource.addEventListener('roblox.upload.failed', (e) => {
+                        try {
+                            const data = JSON.parse(e.data);
+                            if (data) {
+                                const target = Store.getJob(data.jobId || data.id);
+                                if (target) {
+                                    target.status = 'PUBLISH_FAILED';
+                                    target.robloxPublishStatus = 'FAILED';
+                                    target.errorMessage = data.error || 'Publikasi Roblox gagal';
+                                    Store.updateJob(target, 'SSE');
+                                    UI.patchJobViews();
+                                    Toast.show(`Publikasi Roblox gagal: ${target.errorMessage}`, 'error');
+                                }
+                            }
+                        } catch (err) {}
+                    });
+
+                    this.eventSource.onerror = () => {
+                        this.isConnecting = false;
+                        UI.setConnectionStatus('OFFLINE', 'offline');
+                        this.cleanup();
+                        if (!this.reconnectTimer) {
+                            this.reconnectTimer = setTimeout(() => {
+                                this.reconnectTimer = null;
+                                this.connect();
+                            }, 3000);
+                        }
+                    };
+
+                } catch (e) {
+                    this.isConnecting = false;
+                    UI.setConnectionStatus('OFFLINE', 'offline');
+                }
+            },
+
+            cleanup() {
+                if (this.eventSource) {
+                    this.eventSource.close();
+                    this.eventSource = null;
+                }
+            }
+        };
+
+        const UI = {
+            initDOM() {
+                DOM.splashScreen = document.getElementById('splashScreen');
+                DOM.splashBar = document.getElementById('splashBar');
+                DOM.connStatusDot = document.getElementById('connStatusDot');
+                DOM.connStatusText = document.getElementById('connStatusText');
+                DOM.toastContainer = document.getElementById('toastContainer');
+
+                DOM.dashTotal = document.getElementById('dashTotal');
+                DOM.dashQueued = document.getElementById('dashQueued');
+                DOM.dashProcessing = document.getElementById('dashProcessing');
+                DOM.dashReady = document.getElementById('dashReady');
+                DOM.dashPublished = document.getElementById('dashPublished');
+                DOM.dashError = document.getElementById('dashError');
+
+                DOM.tabActiveBadge = document.getElementById('tabActiveBadge');
+                DOM.tabResultBadge = document.getElementById('tabResultBadge');
+                DOM.tabPublishBadge = document.getElementById('tabPublishBadge');
+                DOM.tabPublishedBadge = document.getElementById('tabPublishedBadge');
+
+                DOM.processTicketsContainer = document.getElementById('processTicketsContainer');
+                DOM.allJobsTicketsContainer = document.getElementById('allJobsTicketsContainer');
+                DOM.resultsTicketsContainer = document.getElementById('resultsTicketsContainer');
+                DOM.publishTicketsContainer = document.getElementById('publishTicketsContainer');
+                DOM.publishedTicketsContainer = document.getElementById('publishedTicketsContainer');
+
+                DOM.recentActivityList = document.getElementById('recentActivityList');
+            },
+
+            bindEvents() {
+                document.querySelectorAll('.tab-btn, .bottom-nav-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const tabTarget = e.currentTarget.getAttribute('data-tab');
+                        if (tabTarget) UI.switchTab(tabTarget);
+                    });
+                });
+
+                document.getElementById('btnSubmitYt')?.addEventListener('click', App.handleBulkYtSubmit);
+                document.getElementById('fileInput')?.addEventListener('change', App.handleFileInputChange);
+                document.getElementById('btnSaveRoblox')?.addEventListener('click', App.handleSaveRobloxConfig);
+
+                const dropzone = document.getElementById('dropzone');
+                if (dropzone) {
+                    ['dragenter', 'dragover'].forEach(evt => {
+                        dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add('active'); });
+                    });
+                    ['dragleave', 'drop'].forEach(evt => {
+                        dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove('active'); });
+                    });
+                    dropzone.addEventListener('drop', (e) => {
+                        if (e.dataTransfer?.files?.length) {
+                            App.uploadFiles(e.dataTransfer.files);
+                        }
+                    });
+                }
+
+                document.getElementById('allJobsSearch')?.addEventListener('input', (e) => {
+                    Store.state.allJobsSearch = e.target.value.toLowerCase();
+                    UI.renderAllJobsTickets();
+                });
+
+                document.getElementById('allJobsFilter')?.addEventListener('change', (e) => {
+                    Store.state.allJobsFilter = e.target.value;
+                    UI.renderAllJobsTickets();
+                });
+
+                document.getElementById('resultsSearch')?.addEventListener('input', (e) => {
+                    Store.state.resultsSearch = e.target.value.toLowerCase();
+                    UI.renderResultsTickets();
+                });
+
+                document.getElementById('publishSearch')?.addEventListener('input', (e) => {
+                    Store.state.publishSearch = e.target.value.toLowerCase();
+                    UI.renderPublishTickets();
+                });
+
+                document.getElementById('publishedSearch')?.addEventListener('input', (e) => {
+                    Store.state.publishedSearch = e.target.value.toLowerCase();
+                    UI.renderPublishedTickets();
+                });
+
+                document.getElementById('btnMobileMore')?.addEventListener('click', () => {
+                    document.getElementById('mobileMoreDrawer')?.classList.add('active');
+                });
+
+                document.getElementById('btnCancelDelete')?.addEventListener('click', UI.hideDeleteModal);
+                document.getElementById('btnConfirmDelete')?.addEventListener('click', App.executeDeleteAction);
+            },
+
+            setConnectionStatus(text, cls) {
+                if (DOM.connStatusText) DOM.connStatusText.innerText = text;
+                if (DOM.connStatusDot) DOM.connStatusDot.className = `status-dot ${cls}`;
+            },
+
+            switchTab(tabId) {
+                Store.state.activeTab = tabId;
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+                const target = document.getElementById(tabId);
+                if (target) target.classList.remove('hidden');
+
+                document.querySelectorAll('.tab-btn, .bottom-nav-btn').forEach(btn => {
+                    if (btn.getAttribute('data-tab') === tabId) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+
+                UI.patchJobViews();
+            },
+
+            updateSystemMetricsUI(metrics) {
+                if (!metrics) return;
+                const cpu = Math.round(metrics.cpuPercent || 0);
+                const mem = Math.round(metrics.memoryPercent || 0);
+
+                const ringCpu = document.getElementById('ringCpu');
+                if (ringCpu) ringCpu.setAttribute('stroke-dasharray', `${cpu}, 100`);
+                const textCpuVal = document.getElementById('textCpuVal');
+                if (textCpuVal) textCpuVal.innerText = `${cpu}%`;
+
+                const ringMem = document.getElementById('ringMem');
+                if (ringMem) ringMem.setAttribute('stroke-dasharray', `${mem}, 100`);
+                const textMemVal = document.getElementById('textMemVal');
+                if (textMemVal) textMemVal.innerText = `${mem}%`;
+
+                const textMemFormatted = document.getElementById('textMemFormatted');
+                if (textMemFormatted && metrics.memoryUsedMb) {
+                    textMemFormatted.innerText = `${metrics.memoryUsedMb} MB / ${metrics.memoryTotalMb || 0} MB`;
+                }
+
+                const textNetIn = document.getElementById('textNetIn');
+                if (textNetIn) textNetIn.innerText = metrics.networkIn || '0 KB/s';
+                const textNetOut = document.getElementById('textNetOut');
+                if (textNetOut) textNetOut.innerText = metrics.networkOut || '0 KB/s';
+
+                const metricWorkers = document.getElementById('metricWorkers');
+                if (metricWorkers) metricWorkers.innerText = `${metrics.activeWorkers || 0} / ${metrics.maxWorkers || 1}`;
+                const metricQueue = document.getElementById('metricQueue');
+                if (metricQueue) metricQueue.innerText = metrics.queuedJobs || 0;
+            },
+
+            logActivity(msg) {
+                if (!DOM.recentActivityList) return;
+                const p = document.createElement('p');
+                const time = new Date().toLocaleTimeString('id-ID');
+                p.innerHTML = `<span style="color:var(--text-light);">[${time}]</span> ${escapeHTML(msg)}`;
+                DOM.recentActivityList.prepend(p);
+            },
+
+            patchJobViews() {
+                const allJobs = Array.from(Store.state.jobsMap.values());
+                
+                const queuedCount = allJobs.filter(j => j.status === 'QUEUED').length;
+                const processingCount = allJobs.filter(j => j.status === 'PROCESSING').length;
+                const readyCount = allJobs.filter(j => j.status === 'READY').length;
+                const publishQueueList = PublishQueueStore.getAll();
+                const publishedList = PublishedHistoryStore.getAll();
+                const failedCount = allJobs.filter(j => j.status === 'ERROR' || j.status === 'PUBLISH_FAILED').length;
+
+                if (DOM.dashTotal) DOM.dashTotal.innerText = allJobs.length;
+                if (DOM.dashQueued) DOM.dashQueued.innerText = queuedCount;
+                if (DOM.dashProcessing) DOM.dashProcessing.innerText = processingCount;
+                if (DOM.dashReady) DOM.dashReady.innerText = readyCount;
+                if (DOM.dashPublished) DOM.dashPublished.innerText = publishedList.length;
+                if (DOM.dashError) DOM.dashError.innerText = failedCount;
+
+                if (DOM.tabActiveBadge) DOM.tabActiveBadge.innerText = queuedCount + processingCount;
+                if (DOM.tabResultBadge) DOM.tabResultBadge.innerText = readyCount;
+                if (DOM.tabPublishBadge) DOM.tabPublishBadge.innerText = publishQueueList.length;
+                if (DOM.tabPublishedBadge) DOM.tabPublishedBadge.innerText = publishedList.length;
+
+                UI.renderProcessTickets();
+                UI.renderAllJobsTickets();
+                UI.renderResultsTickets();
+                UI.renderPublishTickets();
+                UI.renderPublishedTickets();
+            },
+
+            renderTicketCard(job, options = {}) {
+                const isPublished = job.status === 'PUBLISHED' || Boolean(job.robloxAssetId);
+                const isPublishing = job.status === 'PUBLISHING';
+                const isError = job.status === 'ERROR' || job.status === 'PUBLISH_FAILED';
+                const isReady = job.status === 'READY';
+
+                let cardClass = 'ticket-card';
+                if (isPublished) cardClass += ' published';
+                else if (isPublishing) cardClass += ' publishing';
+                else if (isError) cardClass += ' error';
+                else if (isReady) cardClass += ' ready';
+
+                const progress = job.progress || 0;
+
+                return `
+                    <div class="${cardClass}" id="ticket-${escapeHTML(job.id)}">
+                        <div class="ticket-header">
+                            <div>
+                                <span class="font-mono" style="font-size:0.5625rem; font-weight:700; color:var(--text-muted);">JOB: ${escapeHTML(job.id)}</span>
+                                <h4 class="ticket-title">${escapeHTML(job.title)}</h4>
+                            </div>
+                            <span class="status-badge font-mono" style="font-size:0.5625rem;">${escapeHTML(job.status)}</span>
+                        </div>
+
+                        <div class="ticket-meta">
+                            <div class="ticket-meta-item">
+                                <span class="ticket-meta-label">SOURCE</span>
+                                <span class="ticket-meta-val">${escapeHTML(job.type)}</span>
+                            </div>
+                            <div class="ticket-meta-item">
+                                <span class="ticket-meta-label">SPEED</span>
+                                <span class="ticket-meta-val">${escapeHTML(job.speedMode)}</span>
+                            </div>
+                            <div class="ticket-meta-item">
+                                <span class="ticket-meta-label">ROBLOX ASSET</span>
+                                <span class="ticket-meta-val" style="color:var(--brand-gold); font-weight:800;">${job.robloxAssetId ? escapeHTML(job.robloxAssetId) : 'NOT PUBLISHED'}</span>
+                            </div>
+                            <div class="ticket-meta-item">
+                                <span class="ticket-meta-label">SIZE / DURATION</span>
+                                <span class="ticket-meta-val">${job.fileSize ? formatFileSize(job.fileSize) : '—'}</span>
+                            </div>
+                        </div>
+
+                        ${!isPublished && !isReady && !isError ? `
+                            <div style="display:flex; flex-direction:column; gap:0.25rem;">
+                                <div style="display:flex; justify-content:space-between; font-family:'JetBrains Mono'; font-size:0.5625rem; color:var(--text-muted);">
+                                    <span>${escapeHTML(job.stage || 'PROCESSING')}</span>
+                                    <span>${progress}%</span>
+                                </div>
+                                <div class="ticket-progress-bar">
+                                    <div class="ticket-progress-fill" style="width: ${progress}%;"></div>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="ticket-actions">
+                            <button onclick="UI.showJobInspector('${escapeHTML(job.id)}')" class="btn btn-secondary btn-sm">INSPECT</button>
+                            ${isReady || isPublished ? `
+                                <a href="${ApiService.getDownloadUrl(job.id)}" target="_blank" class="btn btn-secondary btn-sm" style="text-decoration:none;">DOWNLOAD</a>
+                            ` : ''}
+                            ${options.showPublishBtn && (isReady || job.status === 'PUBLISH_FAILED') ? `
+                                <button onclick="App.publishToRoblox('${escapeHTML(job.id)}')" class="btn btn-gold btn-sm" ${isPublishing ? 'disabled' : ''}>
+                                    ${isPublishing ? 'PUBLISHING...' : 'PUBLISH ROBLOX'}
+                                </button>
+                            ` : ''}
+                            ${options.showRemoveLocalBtn ? `
+                                <button onclick="UI.promptDeleteLocalRecord('${escapeHTML(job.id)}', '${options.context}')" class="btn btn-danger btn-sm">REMOVE LOCAL</button>
+                            ` : ''}
+                            ${options.showDeleteServerBtn ? `
+                                <button onclick="UI.promptDeleteServerJob('${escapeHTML(job.id)}')" class="btn btn-danger btn-sm">DELETE SERVER</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            },
+
+            renderProcessTickets() {
+                if (!DOM.processTicketsContainer) return;
+                const jobs = Array.from(Store.state.jobsMap.values())
+                    .filter(j => j.status === 'QUEUED' || j.status === 'PROCESSING')
+                    .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                if (jobs.length === 0) {
+                    DOM.processTicketsContainer.innerHTML = `<div class="op-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light); font-family: 'JetBrains Mono', monospace;">Tidak ada proses aktif saat ini.</div>`;
+                    return;
+                }
+                DOM.processTicketsContainer.innerHTML = jobs.map(j => UI.renderTicketCard(j, { showDeleteServerBtn: true })).join('');
+            },
+
+            renderAllJobsTickets() {
+                if (!DOM.allJobsTicketsContainer) return;
+                let jobs = Array.from(Store.state.jobsMap.values());
+                const search = Store.state.allJobsSearch;
+                const filter = Store.state.allJobsFilter;
+
+                if (search) {
+                    jobs = jobs.filter(j => j.id.toLowerCase().includes(search) || j.title.toLowerCase().includes(search));
+                }
+                if (filter !== 'ALL') {
+                    jobs = jobs.filter(j => j.status === filter);
+                }
+
+                jobs.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                if (jobs.length === 0) {
+                    DOM.allJobsTicketsContainer.innerHTML = `<div class="op-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light); font-family: 'JetBrains Mono', monospace;">Tidak ada job yang sesuai dengan filter.</div>`;
+                    return;
+                }
+                DOM.allJobsTicketsContainer.innerHTML = jobs.map(j => UI.renderTicketCard(j, { showPublishBtn: true, showDeleteServerBtn: true })).join('');
+            },
+
+            renderResultsTickets() {
+                if (!DOM.resultsTicketsContainer) return;
+                let jobs = Array.from(Store.state.jobsMap.values()).filter(j => j.status === 'READY');
+                const search = Store.state.resultsSearch;
+
+                if (search) {
+                    jobs = jobs.filter(j => j.id.toLowerCase().includes(search) || j.title.toLowerCase().includes(search));
+                }
+
+                jobs.sort((a,b) => new Date(b.completedAt || b.updatedAt) - new Date(a.completedAt || a.updatedAt));
+
+                if (jobs.length === 0) {
+                    DOM.resultsTicketsContainer.innerHTML = `<div class="op-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light); font-family: 'JetBrains Mono', monospace;">Belum ada audio dengan status READY.</div>`;
+                    return;
+                }
+                DOM.resultsTicketsContainer.innerHTML = jobs.map(j => UI.renderTicketCard(j, { showPublishBtn: true, showDeleteServerBtn: true })).join('');
+            },
+
+            renderPublishTickets() {
+                if (!DOM.publishTicketsContainer) return;
+                let jobs = PublishQueueStore.getAll();
+                const search = Store.state.publishSearch;
+
+                if (search) {
+                    jobs = jobs.filter(j => j.id.toLowerCase().includes(search) || j.title.toLowerCase().includes(search));
+                }
+
+                jobs.sort((a,b) => new Date(b.completedAt || b.updatedAt) - new Date(a.completedAt || a.updatedAt));
+
+                if (jobs.length === 0) {
+                    DOM.publishTicketsContainer.innerHTML = `<div class="op-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light); font-family: 'JetBrains Mono', monospace;">Tidak ada audio di Publish Queue.</div>`;
+                    return;
+                }
+                DOM.publishTicketsContainer.innerHTML = jobs.map(j => UI.renderTicketCard(j, { showPublishBtn: true, showRemoveLocalBtn: true, context: 'PUBLISH_QUEUE' })).join('');
+            },
+
+            renderPublishedTickets() {
+                if (!DOM.publishedTicketsContainer) return;
+                let jobs = PublishedHistoryStore.getAll();
+                const search = Store.state.publishedSearch;
+
+                if (search) {
+                    jobs = jobs.filter(j => 
+                        j.id.toLowerCase().includes(search) || 
+                        j.title.toLowerCase().includes(search) ||
+                        (j.robloxAssetId && String(j.robloxAssetId).includes(search))
+                    );
+                }
+
+                jobs.sort((a,b) => new Date(b.publishedAt || b.updatedAt) - new Date(a.publishedAt || a.updatedAt));
+
+                if (jobs.length === 0) {
+                    DOM.publishedTicketsContainer.innerHTML = `<div class="op-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light); font-family: 'JetBrains Mono', monospace;">Belum ada history audio yang terpublikasi ke Roblox.</div>`;
+                    return;
+                }
+                DOM.publishedTicketsContainer.innerHTML = jobs.map(j => UI.renderTicketCard(j, { showRemoveLocalBtn: true, context: 'PUBLISHED_HISTORY' })).join('');
+            },
+
+            showJobInspector(jobId) {
+                const job = Store.getJob(jobId);
+                if (!job) {
+                    Toast.show("Job tidak ditemukan secara lokal.", "warning");
+                    return;
+                }
+
+                const content = document.getElementById('jobDetailContent');
+                if (!content) return;
+
+                content.innerHTML = `
+                    <div class="drawer-section">
+                        <span class="drawer-section-title">METADATA UTAMA</span>
+                        <div class="ticket-meta" style="grid-template-columns: 1fr;">
+                            <div class="ticket-meta-item">
+                                <span class="ticket-meta-label">JOB ID</span>
+                                <span class="ticket-meta-val">${escapeHTML(job.id)}</span>
+                            </div>
+                            <div class="ticket-meta-item" style="margin-top:0.25rem;">
+                                <span class="ticket-meta-label">TITLE</span>
+                                <span class="ticket-meta-val">${escapeHTML(job.title)}</span>
+                            </div>
+                            <div class="ticket-meta-item" style="margin-top:0.25rem;">
+                                <span class="ticket-meta-label">SOURCE URL</span>
+                                <span class="ticket-meta-val"><a href="${safeExternalURL(job.url)}" target="_blank" style="color:var(--brand-blue-600);">${escapeHTML(job.url || 'FILE UPLOAD')}</a></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="drawer-section">
+                        <span class="drawer-section-title">INFORMASI PROSES</span>
+                        <div class="ticket-meta">
+                            <div class="ticket-meta-item">
+                                <span class="ticket-meta-label">STATUS</span>
+                                <span class="ticket-meta-val">${escapeHTML(job.status)}</span>
+                            </div>
+                            <div class="ticket-meta-item">
+                                <span class="ticket-meta-label">SPEED MODE</span>
+                                <span class="ticket-meta-val">${escapeHTML(job.speedMode)}</span>
+                            </div>
+                            <div class="ticket-meta-item">
+                                <span class="ticket-meta-label">FORMAT</span>
+                                <span class="ticket-meta-val">${escapeHTML(job.outputFormat)}</span>
+                            </div>
+                            <div class="ticket-meta-item">
+                                <span class="ticket-meta-label">FILE SIZE</span>
+                                <span class="ticket-meta-val">${formatFileSize(job.fileSize)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="drawer-section">
+                        <span class="drawer-section-title">ROBLOX OPEN CLOUD STATUS</span>
+                        <div class="ticket-meta">
+                            <div class="ticket-meta-item">
+                                <span class="ticket-meta-label">ROBLOX ASSET ID</span>
+                                <span class="ticket-meta-val" style="color:var(--brand-gold); font-weight:800;">${job.robloxAssetId ? escapeHTML(job.robloxAssetId) : '—'}</span>
+                            </div>
+                            <div class="ticket-meta-item">
+                                <span class="ticket-meta-label">PUBLISH STATUS</span>
+                                <span class="ticket-meta-val">${escapeHTML(job.robloxPublishStatus || 'NOT_PUBLISHED')}</span>
+                            </div>
+                        </div>
+                        ${job.errorMessage ? `
+                            <div style="padding:0.5rem; background:var(--danger-soft); border:1px solid rgba(220,38,38,0.2); border-radius:var(--radius-md); color:var(--danger); font-size:0.625rem;">
+                                <strong>Error:</strong> ${escapeHTML(job.errorMessage)}
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="drawer-section">
+                        <span class="drawer-section-title">LIFECYCLE TIMELINE</span>
+                        <div class="timeline">
+                            <div class="timeline-item ${job.createdAt ? 'active' : ''}">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span>QUEUED / CREATED</span>
+                                    <span class="timeline-time">${formatDateTime(job.createdAt)}</span>
+                                </div>
+                            </div>
+                            <div class="timeline-item ${job.startedAt ? 'active' : ''}">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span>PROCESSING STARTED</span>
+                                    <span class="timeline-time">${formatDateTime(job.startedAt)}</span>
+                                </div>
+                            </div>
+                            <div class="timeline-item ${job.completedAt ? 'active' : ''}">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span>READY / COMPLETED</span>
+                                    <span class="timeline-time">${formatDateTime(job.completedAt)}</span>
+                                </div>
+                            </div>
+                            <div class="timeline-item ${job.publishedAt ? 'active' : ''}">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span>ROBLOX PUBLISHED</span>
+                                    <span class="timeline-time">${formatDateTime(job.publishedAt)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('jobDetailModal')?.classList.add('active');
+            },
+
+            hideDetailModal() {
+                document.getElementById('jobDetailModal')?.classList.remove('active');
+            },
+
+            promptDeleteLocalRecord(jobId, context) {
+                Store.state.pendingDeleteContext = { type: 'LOCAL', jobId, context };
+                const modalTitle = document.getElementById('deleteModalTitle');
+                const modalDesc = document.getElementById('deleteModalDesc');
+                if (modalTitle) modalTitle.innerText = "REMOVE LOCAL RECORD?";
+                if (modalDesc) modalDesc.innerText = `Menghapus snapshot job ID: ${jobId} dari browser lokal. Asset Roblox & data server TIDAK akan dihapus.`;
+                document.getElementById('deleteModal')?.classList.add('active');
+            },
+
+            promptDeleteServerJob(jobId) {
+                Store.state.pendingDeleteContext = { type: 'SERVER', jobId };
+                const modalTitle = document.getElementById('deleteModalTitle');
+                const modalDesc = document.getElementById('deleteModalDesc');
+                if (modalTitle) modalTitle.innerText = "DELETE SERVER JOB?";
+                if (modalDesc) modalDesc.innerText = `Hapus permanent job ID: ${jobId} dari server backend?`;
+                document.getElementById('deleteModal')?.classList.add('active');
+            },
+
+            hideDeleteModal() {
+                Store.state.pendingDeleteContext = null;
+                document.getElementById('deleteModal')?.classList.remove('active');
+            },
+
+            showClearHistoryModal() {
+                document.getElementById('clearHistoryModal')?.classList.add('active');
+            },
+
+            hideClearHistoryModal() {
+                document.getElementById('clearHistoryModal')?.classList.remove('active');
+            },
+
+            hideMobileDrawer() {
+                document.getElementById('mobileMoreDrawer')?.classList.remove('active');
+            }
+        };
+
+        const App = {
+            async init() {
+                UI.initDOM();
+                UI.bindEvents();
+
+                if (DOM.splashBar) DOM.splashBar.style.width = '30%';
+
+                Store.hydrateFromStorage();
+                UI.patchJobViews();
+
+                if (DOM.splashBar) DOM.splashBar.style.width = '60%';
+
+                await App.loadRobloxConfig();
+                await App.syncJobsWithBackend();
+
+                SseManager.connect();
+
+                if (DOM.splashBar) DOM.splashBar.style.width = '100%';
+                setTimeout(() => {
+                    if (DOM.splashScreen) DOM.splashScreen.classList.add('hidden-splash');
+                }, 300);
+            },
+
+            async syncJobsWithBackend() {
+                try {
+                    const serverRes = await ApiService.getJobs();
+                    const serverJobs = Array.isArray(serverRes) ? serverRes : (serverRes.jobs || serverRes.data || []);
+
+                    serverJobs.forEach(sJob => {
+                        Store.updateJob(sJob, 'SERVER');
+                    });
+
+                    UI.patchJobViews();
+                } catch (e) {
+                    console.warn('[Sync] Server unreachable. Local data preserved.', e);
+                }
+            },
+
+            async loadRobloxConfig() {
+                try {
+                    const res = await ApiService.getRobloxConfig();
+                    const cfg = res.config || res;
+                    Store.state.robloxConfig = cfg;
+
+                    const creatorTypeEl = document.getElementById('robloxCreatorType');
+                    const creatorIdEl = document.getElementById('robloxCreatorId');
+                    const autoUploadEl = document.getElementById('robloxAutoUpload');
+                    const configBadge = document.getElementById('configBadge');
+                    const apiKeyStatusText = document.getElementById('apiKeyStatusText');
+
+                    if (creatorTypeEl) creatorTypeEl.value = cfg.creatorType || 'USER';
+                    if (creatorIdEl) creatorIdEl.value = cfg.creatorId || '';
+                    if (autoUploadEl) autoUploadEl.checked = Boolean(cfg.autoUpload);
+
+                    if (configBadge) {
+                        configBadge.innerText = cfg.configured ? 'CONFIGURED' : 'NOT CONFIGURED';
+                        configBadge.style.background = cfg.configured ? 'var(--success-soft)' : 'var(--warning-soft)';
+                        configBadge.style.color = cfg.configured ? 'var(--success)' : 'var(--warning)';
+                    }
+                    if (apiKeyStatusText) {
+                        apiKeyStatusText.innerText = cfg.configured ? 'Status: API Key tersimpan aman di server.' : 'Status: API Key belum dikonfigurasi.';
+                        apiKeyStatusText.style.color = cfg.configured ? 'var(--success)' : 'var(--warning)';
+                    }
+                } catch (e) {
+                    console.warn('[Config] Failed to load Roblox config', e);
+                }
+            },
+
+            async handleBulkYtSubmit() {
+                const textarea = document.getElementById('ytUrlsInput');
+                const speedSelect = document.getElementById('ytSpeedMode');
+                if (!textarea) return;
+
+                const urls = textarea.value.split('\n').map(u => u.trim()).filter(u => u.length > 0);
+                if (urls.length === 0) {
+                    Toast.show("Masukkan minimal satu URL YouTube.", "warning");
+                    return;
+                }
+
+                const speedMode = speedSelect ? speedSelect.value : '1.0';
+
+                try {
+                    const res = await ApiService.submitBulkYt(urls, speedMode);
+                    const jobsArr = res.jobs || res.data || [];
+
+                    jobsArr.forEach(j => {
+                        Store.updateJob(j, 'UPLOAD');
+                    });
+
+                    textarea.value = '';
+                    Toast.show(`Berhasil memasukkan ${jobsArr.length || urls.length} job ke antrean.`, "success");
+                    UI.switchTab('tab-process');
+                } catch (e) {
+                    Toast.show(`Submit YouTube gagal: ${e.message}`, "error");
+                }
+            },
+
+            async handleFileInputChange(e) {
+                const files = e.target.files;
+                if (files && files.length > 0) {
+                    await App.uploadFiles(files);
+                    e.target.value = '';
+                }
+            },
+
+            async uploadFiles(files) {
+                const speedSelect = document.getElementById('fileSpeedMode');
+                const speedMode = speedSelect ? speedSelect.value : '1.0';
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    try {
+                        const res = await ApiService.uploadFileJob(file, speedMode);
+                        const jobData = res.job || res.data || res;
+                        Store.updateJob(jobData, 'UPLOAD');
+                        Toast.show(`Upload "${file.name}" berhasil.`, "success");
+                    } catch (e) {
+                        Toast.show(`Upload "${file.name}" gagal: ${e.message}`, "error");
+                    }
+                }
+                UI.switchTab('tab-process');
+            },
+
+            async handleSaveRobloxConfig() {
+                const apiKeyInput = document.getElementById('robloxApiKey');
+                const creatorTypeSelect = document.getElementById('robloxCreatorType');
+                const creatorIdInput = document.getElementById('robloxCreatorId');
+                const autoUploadCheckbox = document.getElementById('robloxAutoUpload');
+
+                const payload = {
+                    creatorType: creatorTypeSelect ? creatorTypeSelect.value : 'USER',
+                    creatorId: creatorIdInput ? creatorIdInput.value.trim() : '',
+                    autoUpload: autoUploadCheckbox ? autoUploadCheckbox.checked : false
+                };
+
+                if (apiKeyInput && apiKeyInput.value.trim().length > 0) {
+                    payload.apiKey = apiKeyInput.value.trim();
+                }
+
+                try {
+                    await ApiService.saveRobloxConfig(payload);
+                    if (apiKeyInput) apiKeyInput.value = '';
+                    Toast.show("Konfigurasi Roblox berhasil disimpan.", "success");
+                    App.loadRobloxConfig();
+                } catch (e) {
+                    Toast.show(`Gagal menyimpan konfigurasi: ${e.message}`, "error");
+                }
+            },
+
+            async publishToRoblox(jobId) {
+                const job = Store.getJob(jobId);
+                if (!job) return;
+
+                job.status = 'PUBLISHING';
+                job.robloxPublishStatus = 'PUBLISHING';
+                Store.updateJob(job, 'USER');
+                UI.patchJobViews();
+
+                try {
+                    await ApiService.triggerRobloxUpload(jobId);
+                    Toast.show(`Proses publikasi Roblox dikirim untuk Job: ${jobId}`, "info");
+                } catch (e) {
+                    job.status = 'PUBLISH_FAILED';
+                    job.robloxPublishStatus = 'FAILED';
+                    job.errorMessage = e.message;
+                    Store.updateJob(job, 'USER');
+                    UI.patchJobViews();
+                    Toast.show(`Trigger Publish Gagal: ${e.message}`, "error");
+                }
+            },
+
+            async executeDeleteAction() {
+                const ctx = Store.state.pendingDeleteContext;
+                if (!ctx) return;
+
+                if (ctx.type === 'LOCAL') {
+                    if (ctx.context === 'PUBLISH_QUEUE') {
+                        PublishQueueStore.remove(ctx.jobId);
+                    } else if (ctx.context === 'PUBLISHED_HISTORY') {
+                        PublishedHistoryStore.remove(ctx.jobId);
+                    } else {
+                        PersistentJobStore.remove(ctx.jobId);
+                    }
+                    Toast.show("Record lokal berhasil dihapus.", "info");
+                } else if (ctx.type === 'SERVER') {
+                    try {
+                        await ApiService.deleteJobServer(ctx.jobId);
+                        Store.state.jobsMap.delete(ctx.jobId);
+                        PersistentJobStore.remove(ctx.jobId);
+                        PublishQueueStore.remove(ctx.jobId);
+                        Toast.show(`Job server ${ctx.jobId} berhasil dihapus.`, "success");
+                    } catch (e) {
+                        Toast.show(`Gagal menghapus job server: ${e.message}`, "error");
+                    }
+                }
+
+                UI.hideDeleteModal();
+                UI.patchJobViews();
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            App.init();
+        });
+    </script>
+</body>
+</html>
